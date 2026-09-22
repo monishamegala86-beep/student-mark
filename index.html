@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grade Calculator Hub</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,Helvetica,sans-serif}
+body{min-height:100vh;background:linear-gradient(135deg,#eef2ff,#f8fafc);color:#1e293b}
+header{background:linear-gradient(135deg,#4f46e5,#7c3aed);color:white;padding:25px 8%;text-align:center}
+header h1{font-size:32px;margin-bottom:8px} header p{font-size:16px;opacity:.9}
+.container{width:90%;max-width:1000px;margin:40px auto}
+.card{background:white;border-radius:18px;padding:30px;margin-bottom:25px;box-shadow:0 10px 30px rgba(0,0,0,.08)}
+.card h2{color:#4338ca;margin-bottom:20px}
+.subjects{display:flex;flex-direction:column;gap:15px}
+.subject{display:grid;grid-template-columns:1fr 160px 160px;gap:12px;align-items:center}
+.subject input{width:100%;padding:12px;border:1px solid #cbd5e1;border-radius:8px;outline:none;font-size:15px}
+.subject input:focus{border-color:#6366f1;box-shadow:0 0 0 3px rgba(99,102,241,.12)}
+.buttons{display:flex;gap:12px;margin-top:25px;flex-wrap:wrap}
+button{border:none;padding:13px 22px;border-radius:9px;cursor:pointer;font-size:15px;font-weight:bold;transition:.2s}
+.calculate{background:#4f46e5;color:white}.calculate:hover{background:#3730a3;transform:translateY(-1px)}
+.reset{background:#e2e8f0;color:#334155}.reset:hover{background:#cbd5e1}
+.result{display:none;margin-top:25px}
+.result-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}
+.result-box{background:#f8fafc;border-radius:12px;padding:20px;text-align:center;border:1px solid #e2e8f0}
+.result-box span{display:block;color:#64748b;font-size:14px;margin-bottom:8px}
+.result-box strong{font-size:25px;color:#4338ca}
+.grade-display{margin-top:20px;text-align:center;padding:25px;background:linear-gradient(135deg,#eef2ff,#ede9fe);border-radius:14px}
+.grade-display h3{color:#64748b;margin-bottom:5px}.grade{font-size:50px;font-weight:bold;color:#4f46e5}
+.info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.info{padding:20px;background:#f8fafc;border-radius:12px;border:1px solid #e2e8f0}
+.info h3{color:#4338ca;margin-bottom:8px}.info p{color:#64748b;line-height:1.6}
+footer{text-align:center;padding:25px;background:#0f172a;color:#cbd5e1;margin-top:40px}
+@media(max-width:700px){header h1{font-size:25px}.subject{grid-template-columns:1fr}.result-grid,.info-grid{grid-template-columns:1fr}.card{padding:20px}}
+</style>
+</head>
+<body>
+<header><h1>Grade Calculator Hub</h1><p>Calculate your marks, percentage, and overall grade easily</p></header>
+<div class="container">
+<div class="card"><h2>Grade Calculator</h2>
+<div class="subjects" id="subjects">
+<div class="subject"><input type="text" placeholder="Subject name" value="Subject 1"><input type="number" class="marks" placeholder="Marks obtained" min="0"><input type="number" class="maxMarks" placeholder="Maximum marks" min="1" value="100"></div><div class="subject"><input type="text" placeholder="Subject name" value="Subject 2"><input type="number" class="marks" placeholder="Marks obtained" min="0"><input type="number" class="maxMarks" placeholder="Maximum marks" min="1" value="100"></div><div class="subject"><input type="text" placeholder="Subject name" value="Subject 3"><input type="number" class="marks" placeholder="Marks obtained" min="0"><input type="number" class="maxMarks" placeholder="Maximum marks" min="1" value="100"></div><div class="subject"><input type="text" placeholder="Subject name" value="Subject 4"><input type="number" class="marks" placeholder="Marks obtained" min="0"><input type="number" class="maxMarks" placeholder="Maximum marks" min="1" value="100"></div><div class="subject"><input type="text" placeholder="Subject name" value="Subject 5"><input type="number" class="marks" placeholder="Marks obtained" min="0"><input type="number" class="maxMarks" placeholder="Maximum marks" min="1" value="100"></div>
+</div>
+<div class="buttons"><button class="calculate" onclick="calculateGrade()">Calculate Grade</button><button class="reset" onclick="resetCalculator()">Reset</button></div>
+<div class="result" id="result"><div class="result-grid">
+<div class="result-box"><span>Total Marks</span><strong id="totalMarks">0</strong></div>
+<div class="result-box"><span>Maximum Marks</span><strong id="maximumMarks">0</strong></div>
+<div class="result-box"><span>Percentage</span><strong id="percentage">0%</strong></div>
+</div><div class="grade-display"><h3>Overall Grade</h3><div class="grade" id="grade">-</div></div></div>
+</div>
+<div class="card"><h2>Grading Scale</h2><div class="info-grid">
+<div class="info"><h3>A+ Grade</h3><p>90% - 100%</p></div><div class="info"><h3>A Grade</h3><p>80% - 89%</p></div><div class="info"><h3>B Grade</h3><p>70% - 79%</p></div><div class="info"><h3>C Grade</h3><p>60% - 69%</p></div><div class="info"><h3>D Grade</h3><p>50% - 59%</p></div><div class="info"><h3>F Grade</h3><p>Below 50%</p></div>
+</div></div></div>
+<footer><p>© 2026 Grade Calculator Hub | Simple & Easy Grade Calculation</p></footer>
+<script>
+function calculateGrade(){
+const marksInputs=document.querySelectorAll(".marks"),maxInputs=document.querySelectorAll(".maxMarks");
+let totalMarks=0,maximumMarks=0;
+for(let i=0;i<marksInputs.length;i++){
+let marks=parseFloat(marksInputs[i].value),max=parseFloat(maxInputs[i].value);
+if(isNaN(marks))marks=0;if(isNaN(max)||max<=0)max=100;
+if(marks<0)marks=0;
+if(marks>max){alert("Marks obtained cannot be greater than maximum marks.");marksInputs[i].focus();return}
+totalMarks+=marks;maximumMarks+=max;
+}
+if(maximumMarks===0){alert("Please enter valid marks.");return}
+const percentage=(totalMarks/maximumMarks)*100;
+let grade=percentage>=90?"A+":percentage>=80?"A":percentage>=70?"B":percentage>=60?"C":percentage>=50?"D":"F";
+document.getElementById("totalMarks").textContent=totalMarks.toFixed(0);
+document.getElementById("maximumMarks").textContent=maximumMarks.toFixed(0);
+document.getElementById("percentage").textContent=percentage.toFixed(2)+"%";
+document.getElementById("grade").textContent=grade;
+document.getElementById("result").style.display="block";
+}
+function resetCalculator(){
+document.querySelectorAll(".marks").forEach(input=>input.value="");
+document.getElementById("totalMarks").textContent="0";
+document.getElementById("maximumMarks").textContent="0";
+document.getElementById("percentage").textContent="0%";
+document.getElementById("grade").textContent="-";
+document.getElementById("result").style.display="none";
+}
+</script>
+</body>
+</html>
